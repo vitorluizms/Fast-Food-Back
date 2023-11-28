@@ -29,8 +29,17 @@ export function createOrderBodyWithToppings(body: OrderBodyWithToppings): OrderB
 }
 
 export async function getOrder() {
-  const order = await prisma.order.findFirst({
-    include: { ProductAndOrder: true },
+  const order = await prisma.order.findFirst({});
+  return order;
+}
+
+export async function createOrder(isFinished?: boolean) {
+  const order = await prisma.order.create({
+    data: {
+      amountPay: faker.number.int({ min: 1, max: 2147000000 }),
+      client: faker.person.firstName(),
+      isFinished,
+    },
   });
 
   return order;

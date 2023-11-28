@@ -26,3 +26,14 @@ export async function createTopping(productId: number): Promise<Topping> {
   });
   return topping;
 }
+
+export async function createProductForOrder(orderId: number, productId: number) {
+  const products = await prisma.productByOrder.create({
+    data: {
+      productId,
+      orderId,
+    },
+  });
+
+  return products;
+}

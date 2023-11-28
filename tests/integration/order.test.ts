@@ -1,10 +1,14 @@
 import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { faker } from '@faker-js/faker';
-import { createOrderBody, createOrderBodyWithToppings, getOrder } from 'tests/factories/order-factory';
-import { createProduct } from 'tests/factories/product-factory';
+import dayjs from 'dayjs';
+import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from 'tests/factories/order-factory';
+import { createProduct, createProductForOrder } from 'tests/factories/product-factory';
 import { ProductType } from '@prisma/client';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import app from '@/app';
+
+dayjs.extend(localizedFormat);
 
 const server = supertest(app);
 
@@ -150,5 +154,87 @@ describe('POST /orders', () => {
       expect(response.status).toBe(httpStatus.CREATED);
       expect(response.body).toEqual(order);
     });
+  });
+});
+
+describe('PATCH /orders/:id/finish', () => {
+  it('should return status 400 if orderId sent is not a number', async () => {
+    const response = await server.patch(`/orders/${faker.person.firstName()}/finish`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it('should return status 404 if orderId sent does not exists at database', async () => {
+    const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}`);
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
+  });
+
+  it('should return status 409 if orderId sent is already finished', async () => {
+    const order = await createOrder(true);
+
+    const response = await server.patch(`/orders/${order.id}/finish`);
+
+    expect(response.status).toBe(httpStatus.CONFLICT);
+  });
+
+  it('should return status 200, update isFinished to true and return order and products of the order updated', async () => {
+    const product = await createProduct(ProductType.Hamburger);
+    const order = await createOrder();
+    await createProductForOrder(order.id, product.id);
+
+    const response = await server.patch(`/orders/${order.id}/finish`);
+
+    expect(response.status).toBe(httpStatus.OK);
+    expect(response.body).toEqual({
+      id: order.id,
+      amountPay: order.amountPay,
+      client: order.client,
+      isFinished: true,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+    });
+  });
+});
+
+describe('GET /orders', () => {
+  it('should return status 200 and an empty array if there is no order at the database', async () => {
+    const date = dayjs().format('YYYY-MM-DD');
+    const response = await server.get(`/orders?date=${date}`);
+
+    expect(response.status).toBe(httpStatus.OK);
+    expect(response.body).toEqual([]);
+  });
+
+  it('should return status 200 and and an array with order data filtered by date', async () => {
+    const product = await createProduct(ProductType.Hamburger);
+    const order = await createOrder();
+    const productOrder = await createProductForOrder(order.id, product.id);
+    const date = dayjs().format('YYYY-MM-DD');
+
+    const response = await server.get(`/orders?date=${date}`);
+
+    expect(response.status).toBe(httpStatus.OK);
+    expect(response.body).toEqual([
+      {
+        id: order.id,
+        client: order.client,
+        amountPay: order.amountPay,
+        isFinished: order.isFinished,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        products: [
+          {
+            observation: productOrder.observation,
+            quantity: productOrder.quantity,
+            toppings: productOrder.toppings,
+            product: {
+              name: product.name,
+              image: product.image,
+            },
+          },
+        ],
+      },
+    ]);
   });
 });

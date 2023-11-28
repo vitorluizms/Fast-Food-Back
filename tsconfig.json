@@ -4,12 +4,11 @@
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "rootDirs": ["src", "tests"],
     "paths": {
       "@/*": ["*"]
-    },
-    "resolveJsonModule": true
+    }
   },
   "ts-node": {
     "esm": true

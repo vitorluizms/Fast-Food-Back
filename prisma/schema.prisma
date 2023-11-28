@@ -55,7 +55,7 @@ model ProductByOrder {
   observation String?
   productId   Int
   orderId     Int
-  quantity    Int
+  quantity    Int      @default(1)
   toppings    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

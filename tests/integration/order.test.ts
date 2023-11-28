@@ -2,12 +2,12 @@ import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
-import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from 'tests/factories/order-factory';
-import { createProduct, createProductForOrder } from 'tests/factories/product-factory';
 import { ProductType } from '@prisma/client';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { cleanDb } from 'tests/helpers';
-import app from '@/app';
+import { cleanDb } from '../helpers';
+import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from '../factories/order-factory';
+import { createProduct, createProductForOrder } from '../factories/product-factory';
+import app from '../../src/app';
 
 dayjs.extend(localizedFormat);
 

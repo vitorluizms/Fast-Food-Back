@@ -1,4 +1,4 @@
-import prisma from '@/database/database';
+import prisma from '../src/database/database';
 
 export async function cleanDb() {
   await prisma.productByOrder.deleteMany();

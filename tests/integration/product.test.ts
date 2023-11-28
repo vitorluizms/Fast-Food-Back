@@ -1,8 +1,9 @@
 import supertest from 'supertest';
-import { createProduct, createTopping } from 'tests/factories/product-factory';
 import { Product, ProductType, Topping } from '@prisma/client';
-import { cleanDb } from 'tests/helpers';
-import app from '@/app';
+import httpStatus from 'http-status';
+import { cleanDb } from '../helpers';
+import { createProduct, createTopping } from '../factories/product-factory';
+import app from '../../src/app';
 
 const server = supertest(app);
 
@@ -14,7 +15,7 @@ describe('GET /products', () => {
   it('should return status 200 and an empty array if there is no products registered', async () => {
     const response = await server.get('/products');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual([]);
   });
 
@@ -32,26 +33,26 @@ describe('GET /products', () => {
       image: product1.image,
       price: product1.price,
       type: product1.type,
-      createdAt: product1.createdAt,
-      updatedAt: product1.updatedAt,
-      toppings: [
+      createdAt: product1.createdAt.toISOString(),
+      updatedAt: product1.updatedAt.toISOString(),
+      Topping: [
         {
           id: topping1.id,
           name: topping1.name,
           productId: product1.id,
           price: topping1.price,
           image: topping1.image,
-          createdAt: topping1.createdAt,
-          updatedAt: topping1.updatedAt,
+          createdAt: topping1.createdAt.toISOString(),
+          updatedAt: topping1.updatedAt.toISOString(),
         },
         {
           id: topping2.id,
           name: topping2.name,
-          productId: product2.id,
+          productId: product1.id,
           price: topping2.price,
           image: topping2.image,
-          createdAt: topping2.createdAt,
-          updatedAt: topping2.updatedAt,
+          createdAt: topping2.createdAt.toISOString(),
+          updatedAt: topping2.updatedAt.toISOString(),
         },
       ],
     };
@@ -62,17 +63,17 @@ describe('GET /products', () => {
       image: product2.image,
       price: product2.price,
       type: product2.type,
-      createdAt: product2.createdAt,
-      updatedAt: product2.updatedAt,
-      toppings: [
+      createdAt: product2.createdAt.toISOString(),
+      updatedAt: product2.updatedAt.toISOString(),
+      Topping: [
         {
           id: topping3.id,
           name: topping3.name,
-          productId: product1.id,
+          productId: product2.id,
           price: topping3.price,
           image: topping3.image,
-          createdAt: topping3.createdAt,
-          updatedAt: topping3.updatedAt,
+          createdAt: topping3.createdAt.toISOString(),
+          updatedAt: topping3.updatedAt.toISOString(),
         },
       ],
     };
@@ -91,15 +92,15 @@ type ProductWithToppings = {
   image: string;
   price: number;
   type: ProductType;
-  createdAt: Date;
-  updatedAt: Date;
-  toppings: {
+  createdAt: string;
+  updatedAt: string;
+  Topping: {
     id: number;
     name: string;
     productId: number;
     image: string;
     price: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
   }[];
 };

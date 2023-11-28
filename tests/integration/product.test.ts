@@ -1,9 +1,14 @@
 import supertest from 'supertest';
 import { createProduct, createTopping } from 'tests/factories/product-factory';
 import { Product, ProductType, Topping } from '@prisma/client';
+import { cleanDb } from 'tests/helpers';
 import app from '@/app';
 
 const server = supertest(app);
+
+beforeEach(async () => {
+  await cleanDb();
+});
 
 describe('GET /products', () => {
   it('should return status 200 and an empty array if there is no products registered', async () => {

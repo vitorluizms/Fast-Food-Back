@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(80)
+  description  String
+  image        String
+  price        Int
+  type         ProductType
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  Topping      Topping[]
+  OrderProduct ProductByOrder[]
+
+  @@map("product")
+}
+
+model Topping {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Int
+  productId Int
+  image     String
+  Product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("topping")
+}
+
+model Order {
+  id              Int              @id @default(autoincrement())
+  amountPay       Int
+  client          String
+  isFinished      Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  ProductAndOrder ProductByOrder[]
+
+  @@map("order")
+}
+
+model ProductByOrder {
+  id          Int      @id @default(autoincrement())
+  observation String?
+  productId   Int
+  orderId     Int
+  quantity    Int      @default(1)
+  toppings    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Order       Order    @relation(fields: [orderId], references: [id])
+  Product     Product  @relation(fields: [productId], references: [id])
+
+  @@map("productByOrder")
+}
+
+enum ProductType {
+  Hamburger
+  Dessert
+  Accompaniment
+  Drinks
+  Combo
+}

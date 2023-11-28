@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import prisma from '@/database/database';
+import prisma from '../../src/database/database';
 
 export function createOrderBody(body: OrderBody): OrderBody {
   return {
@@ -33,12 +33,13 @@ export async function getOrder() {
   return order;
 }
 
-export async function createOrder(isFinished?: boolean) {
+export async function createOrder(isFinished?: boolean, delivered?: boolean) {
   const order = await prisma.order.create({
     data: {
       amountPay: faker.number.int({ min: 1, max: 2147000000 }),
       client: faker.person.firstName(),
-      isFinished,
+      isFinished: isFinished !== undefined ? isFinished : false,
+      delivered: delivered !== undefined ? delivered : false,
     },
   });
 

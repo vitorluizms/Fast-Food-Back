@@ -1,26 +1,8 @@
-import prisma from '@/database/database';
+import prisma from '../src/database/database';
 
 export async function cleanDb() {
-  const array = [
-    {
-      productId: 1,
-      toppings: [1, 2, 3],
-    },
-  ];
-  prisma.order.create({
-    data: {
-      amountPay: 1000,
-      client: 'eu',
-      ProductAndOrder: {
-        createMany: {
-          data: array.map(element => ({
-            productId: element.productId,
-            orderId: 1,
-            quantity: 1,
-            toppings: 'asdas',
-          })),
-        },
-      },
-    },
-  });
+  await prisma.productByOrder.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.topping.deleteMany();
+  await prisma.product.deleteMany();
 }

@@ -2,15 +2,20 @@ import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
-import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from 'tests/factories/order-factory';
-import { createProduct, createProductForOrder } from 'tests/factories/product-factory';
 import { ProductType } from '@prisma/client';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import app from '@/app';
+import { cleanDb } from '../helpers';
+import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from '../factories/order-factory';
+import { createProduct, createProductForOrder } from '../factories/product-factory';
+import app from '../../src/app';
 
 dayjs.extend(localizedFormat);
 
 const server = supertest(app);
+
+beforeEach(async () => {
+  await cleanDb();
+});
 
 describe('POST /orders', () => {
   it('should return status 400 if amountPay was not sent', async () => {
@@ -191,6 +196,7 @@ describe('PATCH /orders/:id/finish', () => {
       amountPay: order.amountPay,
       client: order.client,
       isFinished: true,
+      delivered: false,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     });
@@ -209,6 +215,7 @@ describe('GET /orders', () => {
   it('should return status 200 and and an array with order data filtered by date', async () => {
     const product = await createProduct(ProductType.Hamburger);
     const order = await createOrder();
+    await createOrder(undefined, true);
     const productOrder = await createProductForOrder(order.id, product.id);
     const date = dayjs().format('YYYY-MM-DD');
 
@@ -221,6 +228,7 @@ describe('GET /orders', () => {
         client: order.client,
         amountPay: order.amountPay,
         isFinished: order.isFinished,
+        delivered: false,
         createdAt: order.createdAt,
         updatedAt: order.updatedAt,
         products: [

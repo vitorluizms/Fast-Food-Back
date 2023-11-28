@@ -1,6 +1,6 @@
 import { Product, ProductType, Topping } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-import prisma from '@/database/database';
+import prisma from '../../src/database/database';
 
 export async function createProduct(type: ProductType): Promise<Product> {
   const product: Product = await prisma.product.create({

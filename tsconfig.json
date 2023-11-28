@@ -1,17 +1,17 @@
 {
-    "compilerOptions": {
-      "outDir": "dist",
-      "esModuleInterop": true,
-      "module": "CommonJS",
-      "moduleResolution": "Node",
-      "baseUrl": ".",
-      "paths": {
-        "@/*": [
-          "./src/*"
-        ]
-      }
+  "compilerOptions": {
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "rootDirs": ["src", "tests"],
+    "paths": {
+      "@/*": ["*"]
     },
-    "ts-node": {
-      "esm": true
-    },
+    "resolveJsonModule": true
+  },
+  "ts-node": {
+    "esm": true
   }
+}

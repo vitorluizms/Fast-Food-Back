@@ -11,7 +11,7 @@
     "dev": "npm run dev:load:env nodemon src/server.ts",
     "start": "prisma migrate deploy && node dist/src/server.js",
     "test:load:env": "dotenv -e .env.test",
-    "test": "npm run test:load:env -- jest --passWithNoTest --runInBand",
+    "test": "dotenv -e .env.test -- jest --passWithNoTests --runInBand",
     "test:unit": "npm run test:load:env -- jest --testMatch **/tests/unit/*.test.ts",
     "test:integration": "npm run test:load:env -- jest --testMatch **/tests/integration/*.test.ts",
     "test:seed": "npm run test:load:env prisma db seed",
@@ -23,11 +23,18 @@
     "precommit": "chmod +x .husky/pre-commit",
     "prepare": "husky install"
   },
+  "execMap": {
+    "ts": "node --require ts-node/register --require tsconfig-paths/register"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.6.0",
+    "@types/cors": "^2.8.17",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",

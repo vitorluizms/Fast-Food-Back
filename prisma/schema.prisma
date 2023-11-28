@@ -43,6 +43,7 @@ model Order {
   amountPay       Int
   client          String
   isFinished      Boolean          @default(false)
+  delivered       Boolean          @default(false)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   ProductAndOrder ProductByOrder[]

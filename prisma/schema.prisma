@@ -11,26 +11,69 @@ datasource db {
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String      @db.VarChar(80)
-  description String
-  image       String
-  price       Int
-  type        ProductType
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(80)
+  description  String
+  image        String
+  price        Int
+  type         ProductType
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  Topping      Topping[]
+  OrderProduct ProductByOrder[]
+
+  @@map("product")
+}
+
+model Topping {
+  id                Int                @id @default(autoincrement())
+  name              String
+  price             Int
+  productId         Int
+  Product           Product            @relation(fields: [productId], references: [id])
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  ToppingForProduct ToppingByProduct[]
+
+  @@map("topping")
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
-  description String
-  observation String?
-  toppings    String?
-  amountPay   Int
-  client      String
-  isFinished  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int              @id @default(autoincrement())
+  toppings        String?
+  amountPay       Int
+  client          String
+  isFinished      Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  ProductAndOrder ProductByOrder[]
+
+  @@map("order")
+}
+
+model ProductByOrder {
+  id                Int                @id @default(autoincrement())
+  observation       String?
+  productId         Int
+  orderId           Int
+  quantity          Int
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  Order             Order              @relation(fields: [orderId], references: [id])
+  Product           Product            @relation(fields: [productId], references: [id])
+  ToppingForProduct ToppingByProduct[]
+
+  @@map("productByOrder")
+}
+
+model ToppingByProduct {
+  id             Int            @id @default(autoincrement())
+  toppingId      Int
+  orderProductId Int
+  OrderProduct   ProductByOrder @relation(fields: [orderProductId], references: [id])
+  Topping        Topping        @relation(fields: [toppingId], references: [id])
+
+  @@map("toppingByProduct")
 }
 
 enum ProductType {

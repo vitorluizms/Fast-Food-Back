@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { Order } from '@prisma/client';
 import { CreateOrder } from '@/protocols';
 import orderService from '@/services/order-service';
 
@@ -16,6 +17,11 @@ async function finishOrder(req: Request, res: Response) {
 
   res.status(httpStatus.OK).send(orderFinished);
 }
+async function get(req: Request, res: Response) {
+  const orders: Order[] = await orderService.get();
 
-const orderController = { create, finishOrder };
+  res.status(httpStatus.OK).send(orders);
+}
+
+const orderController = { create, finishOrder, get };
 export default orderController;

@@ -1,3 +1,4 @@
+import { Order } from '@prisma/client';
 import { conflictError } from '@/errors/conflictError';
 import { notFoundError } from '@/errors/notFoundError';
 import { CreateOrder, ProductsArray } from '@/protocols';
@@ -42,5 +43,11 @@ async function finishOrder(id: number) {
   return orderFinished;
 }
 
-const orderService = { create, finishOrder };
+async function get() {
+  const orders: Order[] = await orderRepository.getAllOrders();
+
+  return orders;
+}
+
+const orderService = { create, finishOrder, get };
 export default orderService;

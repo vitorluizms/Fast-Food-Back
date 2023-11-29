@@ -42,5 +42,23 @@ async function getOrderById(id: number): Promise<Order> {
   return order;
 }
 
-const orderRepository = { create, finishOrder, getOrderById };
+async function getAllOrders() {
+  const orders = await prisma.order.findMany({
+    where: { delivered: false },
+    include: {
+      products: {
+        select: {
+          observation: true,
+          quantity: true,
+          toppings: true,
+          product: { select: { name: true, image: true } },
+        },
+      },
+    },
+  });
+
+  return orders;
+}
+
+const orderRepository = { create, finishOrder, getOrderById, getAllOrders };
 export default orderRepository;

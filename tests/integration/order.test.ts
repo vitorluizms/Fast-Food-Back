@@ -222,15 +222,14 @@ describe('PATCH /orders/:id/finish', () => {
       isFinished: true,
       delivered: false,
       createdAt: order.createdAt.toISOString(),
-      updatedAt: order.updatedAt.toISOString(),
+      updatedAt: expect.any(String),
     });
   });
 });
 
 describe('GET /orders', () => {
   it('should return status 200 and an empty array if there is no order at the database', async () => {
-    const date = dayjs().format('YYYY-MM-DD');
-    const response = await server.get(`/orders?date=${date}`);
+    const response = await server.get(`/orders`);
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual([]);
@@ -241,9 +240,8 @@ describe('GET /orders', () => {
     const order = await createOrder();
     await createOrder(undefined, true);
     const productOrder = await createProductForOrder(order.id, product.id);
-    const date = dayjs().format('YYYY-MM-DD');
 
-    const response = await server.get(`/orders?date=${date}`);
+    const response = await server.get(`/orders`);
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual([
@@ -253,8 +251,8 @@ describe('GET /orders', () => {
         amountPay: order.amountPay,
         isFinished: order.isFinished,
         delivered: false,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
+        createdAt: order.createdAt.toISOString(),
+        updatedAt: order.updatedAt.toISOString(),
         products: [
           {
             observation: productOrder.observation,

@@ -7,5 +7,6 @@ const orderRouter = Router();
 
 orderRouter.post('/', validateBody(orderSchema), orderController.create);
 orderRouter.patch('/:id/finish', validateParams(finishOrderSchema), orderController.finishOrder);
+orderRouter.get('/', orderController.get);
 
 export default orderRouter;

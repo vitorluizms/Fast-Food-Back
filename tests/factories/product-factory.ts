@@ -37,3 +37,9 @@ export async function createProductForOrder(orderId: number, productId: number) 
 
   return products;
 }
+
+export async function getProductByOrder(orderId: number) {
+  return prisma.productByOrder.findFirst({
+    where: { orderId },
+  });
+}

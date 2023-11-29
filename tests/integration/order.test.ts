@@ -30,6 +30,7 @@ describe('POST /orders', () => {
     };
 
     const response = await server.post('/orders').send(body);
+    console.log(response.text);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
   });
 

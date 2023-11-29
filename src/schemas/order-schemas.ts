@@ -17,6 +17,7 @@ export const orderSchema = Joi.object<CreateOrder>({
 }).messages({
   'any.required': 'O campo {#label} é obrigatório',
   'string.base': 'O campo {#label} deve ser uma string',
+  'array.base': 'O campo {#label} deve ser um array',
   'number.base': 'O campo {#label} deve ser um número',
   'number.integer': 'O campo {#label} deve ser um número inteiro',
   'number.greater': 'O campo {#label} deve ser um número inteiro maior que {#limit}',

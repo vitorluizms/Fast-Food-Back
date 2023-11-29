@@ -12,11 +12,11 @@ export default function errorHandlingMiddleware(
   next: NextFunction, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   if (error.name === 'NotFoundError') {
-    return res.status(httpStatus.NOT_FOUND).send('NotFound');
+    return res.status(httpStatus.NOT_FOUND).send(error.message);
   }
 
   if (error.name === 'ConflictError') {
-    return res.status(httpStatus.CONFLICT).send('Conflict');
+    return res.status(httpStatus.CONFLICT).send(error.message);
   }
 
   if (error.name === 'InvalidData') {

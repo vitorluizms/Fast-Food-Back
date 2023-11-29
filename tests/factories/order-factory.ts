@@ -13,14 +13,16 @@ export function createOrderBody(body: OrderBody): OrderBody {
   };
 }
 
-export function createOrderBodyWithToppings(body: OrderBodyWithToppings): OrderBodyWithToppings {
+export function createOrderBodyWithToppings(body?: OrderBodyWithToppings): OrderBodyWithToppings {
   return {
-    amountPay: body.amountPay !== undefined ? body.amountPay : faker.number.int({ min: 1, max: 2147000000 }),
-    client: body.client !== undefined ? body.client : faker.person.firstName(),
+    amountPay: body?.amountPay !== undefined ? body.amountPay : faker.number.int({ min: 1, max: 2147000000 }),
+    client: body?.client !== undefined ? body.client : faker.person.firstName(),
     products: [
       {
-        productId: body.products !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
-        toppings: body.products !== undefined ? body.products[0].toppings : faker.person.firstName(),
+        productId: body?.products !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
+        toppings: body?.products !== undefined ? body.products[0].toppings : faker.person.firstName(),
+        observation: body?.products !== undefined ? body.products[0].observation : faker.commerce.productDescription(),
+        quantity: body?.products !== undefined ? body.products[0].quantity : faker.number.int({ min: 1 }),
       },
     ],
   };
@@ -61,6 +63,8 @@ type OrderBodyWithToppings = {
     {
       productId?: number;
       toppings?: string | number;
+      observation?: string | number;
+      quantity?: number | string;
     },
   ];
 };

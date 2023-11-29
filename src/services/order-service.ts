@@ -23,7 +23,7 @@ async function validateProductsId(products: ProductsArray): Promise<void> {
 
   const count: { count: number } = await productRepository.getCountOfProductsInArray(arrayOfIds);
   if (count.count !== filteredArray.length) {
-    throw notFoundError('Ids de produto inválido!');
+    throw notFoundError('ID(s) de produto(s) inválido(s)');
   }
 }
 

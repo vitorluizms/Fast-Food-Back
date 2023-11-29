@@ -24,14 +24,15 @@ describe('POST /orders', () => {
       products: [
         {
           productId: faker.number.int({ min: 1, max: 40 }),
-          toppings: [faker.number.int({ min: 1, max: 40 }), faker.number.int({ min: 1, max: 40 })],
+          toppings: faker.person.firstName(),
         },
       ],
     };
 
     const response = await server.post('/orders').send(body);
-    console.log(response.text);
+
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "amountPay" é obrigatório');
   });
 
   it('should return status 400 if client was not sent', async () => {
@@ -40,13 +41,15 @@ describe('POST /orders', () => {
       products: [
         {
           productId: faker.number.int({ min: 1, max: 40 }),
-          toppings: [faker.number.int({ min: 1, max: 40 }), faker.number.int({ min: 1, max: 40 })],
+          toppings: faker.person.firstName(),
         },
       ],
     };
 
     const response = await server.post('/orders').send(body);
+
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "client" é obrigatório');
   });
 
   it('should return status 400 if products array was not sent', async () => {
@@ -56,7 +59,9 @@ describe('POST /orders', () => {
     };
 
     const response = await server.post('/orders').send(body);
+
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products" é obrigatório');
   });
 
   it('should return status 400 if productId at products array was not sent', async () => {
@@ -65,13 +70,14 @@ describe('POST /orders', () => {
       client: faker.person.firstName(),
       products: [
         {
-          toppings: [faker.number.int({ min: 1, max: 40 }), faker.number.int({ min: 1, max: 40 })],
+          toppings: faker.person.firstName(),
         },
       ],
     };
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].productId" é obrigatório');
   });
 
   it('should return status 400 if amountPay sent is not a number', async () => {
@@ -79,6 +85,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "amountPay" deve ser um número');
   });
 
   it('should return status 400 if amountPay sent is not an integer', async () => {
@@ -86,6 +93,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "amountPay" deve ser um número inteiro');
   });
 
   it('should return status 400 if amountPay sent is not an integer greater than 0', async () => {
@@ -93,6 +101,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "amountPay" deve ser um número inteiro maior que 0');
   });
 
   it('should return status 400 if client sent is not a string', async () => {
@@ -100,6 +109,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "client" deve ser uma string');
   });
 
   it('should return status 400 if products sent is not an array', async () => {
@@ -110,7 +120,9 @@ describe('POST /orders', () => {
     };
 
     const response = await server.post('/orders').send(body);
+
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products" deve ser um array');
   });
 
   it('should return status 400 if productId sent is not a number', async () => {
@@ -118,6 +130,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].productId" deve ser um número');
   });
 
   it('should return status 400 if productId sent is not an integer', async () => {
@@ -125,6 +138,7 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].productId" deve ser um número inteiro');
   });
 
   it('should return status 400 if productId sent is not an integer greater than 0', async () => {
@@ -132,22 +146,97 @@ describe('POST /orders', () => {
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].productId" deve ser um número inteiro maior que 0');
   });
 
   it('should return status 400 if toppings sent is not a string', async () => {
-    const body = createOrderBodyWithToppings({ products: [{ toppings: faker.number.int() }] });
+    const body = createOrderBodyWithToppings({
+      products: [{ productId: faker.number.int(), toppings: faker.number.int() }],
+    });
 
     const response = await server.post('/orders').send(body);
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].toppings" deve ser uma string');
+  });
+
+  it('should return status 400 if observation sent is not a string', async () => {
+    const body = createOrderBodyWithToppings({
+      products: [
+        {
+          productId: faker.number.int(),
+          toppings: faker.commerce.productDescription(),
+          observation: faker.number.int(),
+        },
+      ],
+    });
+
+    const response = await server.post('/orders').send(body);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].observation" deve ser uma string');
+  });
+
+  it('should return status 400 if quantity sent is not a number', async () => {
+    const body = createOrderBodyWithToppings({
+      products: [
+        {
+          productId: faker.number.int(),
+          toppings: faker.commerce.productDescription(),
+          observation: faker.commerce.productDescription(),
+          quantity: faker.person.firstName(),
+        },
+      ],
+    });
+
+    const response = await server.post('/orders').send(body);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].quantity" deve ser um número');
+  });
+
+  it('should return status 400 if quantity sent is not a integer', async () => {
+    const body = createOrderBodyWithToppings({
+      products: [
+        {
+          productId: faker.number.int(),
+          toppings: faker.commerce.productDescription(),
+          observation: faker.commerce.productDescription(),
+          quantity: faker.number.float(),
+        },
+      ],
+    });
+
+    const response = await server.post('/orders').send(body);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].quantity" deve ser um número inteiro');
+  });
+
+  it('should return status 400 if quantity sent is not a integer', async () => {
+    const body = createOrderBodyWithToppings({
+      products: [
+        {
+          productId: faker.number.int(),
+          toppings: faker.commerce.productDescription(),
+          observation: faker.commerce.productDescription(),
+          quantity: faker.number.int({ min: -1, max: 0 }),
+        },
+      ],
+    });
+
+    const response = await server.post('/orders').send(body);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "products[0].quantity" deve ser um número inteiro maior que 0');
   });
 
   describe('When given body is valid', () => {
     it('should return status 404 if a productId sent does not exists at database', async () => {
-      const body = createOrderBodyWithToppings({});
+      const body = createOrderBodyWithToppings();
 
       const response = await server.post('/orders').send(body);
-
       expect(response.status).toBe(httpStatus.NOT_FOUND);
+      expect(response.text).toEqual('ID(s) de produto(s) inválido(s)');
     });
 
     it('should return status 201, create the order and products of the order and return order data', async () => {
@@ -185,24 +274,28 @@ describe('PATCH /orders/:id/finish', () => {
     const response = await server.patch(`/orders/${faker.person.firstName()}/finish`);
 
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número');
   });
 
   it('should return status 400 if orderId sent is not an integer', async () => {
     const response = await server.patch(`/orders/${faker.number.float()}/finish`);
 
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número inteiro');
   });
 
   it('should return status 400 if orderId sent is not greater than 0', async () => {
     const response = await server.patch(`/orders/${faker.number.int({ min: -10, max: 0 })}/finish`);
 
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número inteiro maior que 0');
   });
 
   it('should return status 404 if orderId sent does not exists at database', async () => {
     const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}/finish`);
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
+    expect(response.text).toEqual('Pedido não encontrado!');
   });
 
   it('should return status 409 if orderId sent is already finished', async () => {
@@ -211,6 +304,7 @@ describe('PATCH /orders/:id/finish', () => {
     const response = await server.patch(`/orders/${order.id}/finish`);
 
     expect(response.status).toBe(httpStatus.CONFLICT);
+    expect(response.text).toEqual('Pedido já está encerrado!');
   });
 
   it('should return status 200, update isFinished to true and return order and products of the order updated', async () => {

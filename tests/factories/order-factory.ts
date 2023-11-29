@@ -7,8 +7,7 @@ export function createOrderBody(body: OrderBody): OrderBody {
     client: body.client !== undefined ? body.client : faker.person.firstName(),
     products: [
       {
-        productId:
-          body.products[0].productId !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
+        productId: body.products !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
       },
     ],
   };
@@ -20,9 +19,8 @@ export function createOrderBodyWithToppings(body: OrderBodyWithToppings): OrderB
     client: body.client !== undefined ? body.client : faker.person.firstName(),
     products: [
       {
-        productId:
-          body.products[0].productId !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
-        toppings: body.products[0].toppings !== undefined ? body.products[0].toppings : faker.person.firstName(),
+        productId: body.products !== undefined ? body.products[0].productId : faker.number.int({ min: 1, max: 40 }),
+        toppings: body.products !== undefined ? body.products[0].toppings : faker.person.firstName(),
       },
     ],
   };

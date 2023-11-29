@@ -6,7 +6,7 @@ import { ProductType } from '@prisma/client';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { cleanDb } from '../helpers';
 import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from '../factories/order-factory';
-import { createProduct, createProductForOrder } from '../factories/product-factory';
+import { createProduct, createProductForOrder, getProductByOrder } from '../factories/product-factory';
 import app from '../../src/app';
 
 dayjs.extend(localizedFormat);
@@ -151,13 +151,31 @@ describe('POST /orders', () => {
 
     it('should return status 201, create the order and products of the order and return order data', async () => {
       const product = await createProduct(ProductType.Hamburger);
-      const body = createOrderBodyWithToppings({ products: [{ productId: product.id }] });
+      const body = createOrderBodyWithToppings({
+        products: [{ productId: product.id, toppings: faker.person.firstName() }],
+      });
+      console.log(body);
 
       const response = await server.post('/orders').send(body);
       const order = await getOrder();
+      const productByOrder = await getProductByOrder(order.id);
 
       expect(response.status).toBe(httpStatus.CREATED);
-      expect(response.body).toEqual(order);
+      expect(response.body).toEqual({
+        ...order,
+        createdAt: order.createdAt.toISOString(),
+        updatedAt: order.updatedAt.toISOString(),
+      });
+      expect(productByOrder).toEqual({
+        id: expect.any(Number),
+        observation: null,
+        productId: product.id,
+        orderId: order.id,
+        quantity: 1,
+        toppings: body.products[0].toppings,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
     });
   });
 });
@@ -169,8 +187,14 @@ describe('PATCH /orders/:id/finish', () => {
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
   });
 
+  it('should return status 400 if orderId sent is not an integer', async () => {
+    const response = await server.patch(`/orders/${faker.number.float()}/finish`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
   it('should return status 404 if orderId sent does not exists at database', async () => {
-    const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}`);
+    const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}/finish`);
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
@@ -197,16 +221,15 @@ describe('PATCH /orders/:id/finish', () => {
       client: order.client,
       isFinished: true,
       delivered: false,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: expect.any(String),
     });
   });
 });
 
 describe('GET /orders', () => {
   it('should return status 200 and an empty array if there is no order at the database', async () => {
-    const date = dayjs().format('YYYY-MM-DD');
-    const response = await server.get(`/orders?date=${date}`);
+    const response = await server.get(`/orders`);
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual([]);
@@ -217,9 +240,8 @@ describe('GET /orders', () => {
     const order = await createOrder();
     await createOrder(undefined, true);
     const productOrder = await createProductForOrder(order.id, product.id);
-    const date = dayjs().format('YYYY-MM-DD');
 
-    const response = await server.get(`/orders?date=${date}`);
+    const response = await server.get(`/orders`);
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual([
@@ -229,8 +251,8 @@ describe('GET /orders', () => {
         amountPay: order.amountPay,
         isFinished: order.isFinished,
         delivered: false,
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
+        createdAt: order.createdAt.toISOString(),
+        updatedAt: order.updatedAt.toISOString(),
         products: [
           {
             observation: productOrder.observation,

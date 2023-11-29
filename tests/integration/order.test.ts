@@ -187,8 +187,14 @@ describe('PATCH /orders/:id/finish', () => {
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
   });
 
+  it('should return status 400 if orderId sent is not an integer', async () => {
+    const response = await server.patch(`/orders/${faker.number.float()}/finish`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
   it('should return status 404 if orderId sent does not exists at database', async () => {
-    const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}`);
+    const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}/finish`);
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
@@ -215,8 +221,8 @@ describe('PATCH /orders/:id/finish', () => {
       client: order.client,
       isFinished: true,
       delivered: false,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
     });
   });
 });

@@ -2,7 +2,7 @@ import { Order } from '@prisma/client';
 import prisma from '@/database/database';
 import { CreateOrder } from '@/protocols';
 
-async function create(body: CreateOrder) {
+async function create(body: CreateOrder): Promise<Order> {
   let order: Order;
   await prisma.$transaction(async () => {
     order = await prisma.order.create({
@@ -25,5 +25,22 @@ async function create(body: CreateOrder) {
   return order;
 }
 
-const orderRepository = { create };
+async function finishOrder(id: number): Promise<Order> {
+  const finishedOrder = await prisma.order.update({
+    where: { id },
+    data: { isFinished: true },
+  });
+
+  return finishedOrder;
+}
+
+async function getOrderById(id: number): Promise<Order> {
+  const order = await prisma.order.findFirst({
+    where: { id },
+  });
+
+  return order;
+}
+
+const orderRepository = { create, finishOrder, getOrderById };
 export default orderRepository;

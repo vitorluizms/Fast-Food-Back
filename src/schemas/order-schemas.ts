@@ -15,3 +15,7 @@ export const orderSchema = Joi.object<CreateOrder>({
     )
     .required(),
 });
+
+export const finishOrderSchema = Joi.object({
+  id: Joi.number().integer().greater(0).required(),
+});

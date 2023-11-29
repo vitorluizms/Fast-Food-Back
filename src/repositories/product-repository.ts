@@ -1,12 +1,13 @@
+import { Product } from '@prisma/client';
 import prisma from '../database/database';
 
-function get() {
+function get(): Promise<Product[]> {
   return prisma.product.findMany({
     include: { Topping: true },
   });
 }
 
-async function getCountOfProductsInArray(productsArray: Array<number>) {
+async function getCountOfProductsInArray(productsArray: Array<number>): Promise<{ count: number }> {
   const count = await prisma.product.aggregate({
     where: { id: { in: productsArray } },
     _count: { id: true },

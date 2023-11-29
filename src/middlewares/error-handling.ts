@@ -15,7 +15,7 @@ export default function errorHandlingMiddleware(
     return res.status(httpStatus.NOT_FOUND).send('NotFound');
   }
 
-  if (error.name === 'Conflict') {
+  if (error.name === 'ConflictError') {
     return res.status(httpStatus.CONFLICT).send('Conflict');
   }
 

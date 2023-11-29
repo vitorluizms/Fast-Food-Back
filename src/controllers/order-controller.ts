@@ -10,5 +10,12 @@ async function create(req: Request, res: Response) {
   res.status(httpStatus.CREATED).send(order);
 }
 
-const orderController = { create };
+async function finishOrder(req: Request, res: Response) {
+  const { id } = req.params;
+  const orderFinished = await orderService.finishOrder(Number(id));
+
+  res.status(httpStatus.OK).send(orderFinished);
+}
+
+const orderController = { create, finishOrder };
 export default orderController;

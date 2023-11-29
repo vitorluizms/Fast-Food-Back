@@ -12,5 +12,7 @@
   },
   "ts-node": {
     "esm": true
-  }
+  },
+  "files": ["./src/app.ts", "./src/server.ts"],
+  "include": ["src", "tests"]
 }

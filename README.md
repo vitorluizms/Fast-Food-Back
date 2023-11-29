@@ -78,6 +78,10 @@ Para rodas os testes:
 2. Gere as migrações para a tabela de testes com `npm run test:migration:run`;
 3. Rode os testes com `npm run test`, caso queira ver testes específicos, use `npm run test <nome do teste>`, pode ser `order` ou `product`.
 
+## 🚀 GitFlow
+
+Durante o desenvolvimento foi utilizado conceitos de GitFlow, juntamente com a extensão Git Flow para facilitar o uso.
+
 ## 📞 Contatos
 
 linkedin: `https://www.linkedin.com/in/vitorluizmartins/`

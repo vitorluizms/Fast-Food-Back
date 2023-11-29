@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateOrder } from '@/protocols';
+import { CreateOrder, FinishOrderSchema } from '@/protocols';
 
 export const orderSchema = Joi.object<CreateOrder>({
   client: Joi.string().required(),
@@ -16,6 +16,6 @@ export const orderSchema = Joi.object<CreateOrder>({
     .required(),
 });
 
-export const finishOrderSchema = Joi.object({
+export const finishOrderSchema = Joi.object<FinishOrderSchema>({
   id: Joi.number().integer().greater(0).required(),
 });

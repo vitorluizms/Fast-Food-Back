@@ -6,7 +6,8 @@ import { finishOrderSchema, orderSchema } from '@/schemas/order-schemas';
 const orderRouter = Router();
 
 orderRouter.post('/', validateBody(orderSchema), orderController.create);
-orderRouter.patch('/:id/finish', validateParams(finishOrderSchema), orderController.finishOrder);
 orderRouter.get('/', orderController.get);
+orderRouter.patch('/:id/finish', validateParams(finishOrderSchema), orderController.finishOrder);
+orderRouter.patch('/:id/delivered', validateParams(finishOrderSchema), orderController.deliverOrder);
 
 export default orderRouter;

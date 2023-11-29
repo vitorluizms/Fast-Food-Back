@@ -5,7 +5,7 @@ import { CreateOrder, ProductsArray } from '@/protocols';
 import orderRepository from '@/repositories/order-repository';
 import productRepository from '@/repositories/product-repository';
 
-async function validateProductsId(products: ProductsArray) {
+async function validateProductsId(products: ProductsArray): Promise<void> {
   const uniqueIds = {};
   const filteredArray = products.filter(element => {
     if (uniqueIds[element.productId] === undefined) {
@@ -22,21 +22,28 @@ async function validateProductsId(products: ProductsArray) {
   }
 }
 
-async function create(body: CreateOrder) {
+async function create(body: CreateOrder): Promise<Order> {
   await validateProductsId(body.products);
 
   const order = await orderRepository.create(body);
   return order;
 }
 
-async function validateOrder(id: number) {
+async function validateOrder(id: number): Promise<void> {
   const order = await orderRepository.getOrderById(id);
 
   if (!order) throw notFoundError('Pedido não encontrado!');
   if (order.isFinished === true) throw conflictError('Pedido já está encerrado!');
 }
 
-async function finishOrder(id: number) {
+async function validateOrderToDeliver(id: number): Promise<void> {
+  const order = await orderRepository.getOrderById(id);
+
+  if (!order) throw notFoundError('Pedido não encontrado!');
+  if (order.isFinished === false) throw conflictError('O pedido não está pronto!');
+}
+
+async function finishOrder(id: number): Promise<Order> {
   await validateOrder(id);
   const orderFinished = await orderRepository.finishOrder(id);
 
@@ -49,5 +56,12 @@ async function get() {
   return orders;
 }
 
-const orderService = { create, finishOrder, get };
+async function deliverOrder(id: number): Promise<Order> {
+  await validateOrderToDeliver(id);
+  const orderDelivered = await orderRepository.deliverOrder(id);
+
+  return orderDelivered;
+}
+
+const orderService = { create, finishOrder, get, deliverOrder };
 export default orderService;

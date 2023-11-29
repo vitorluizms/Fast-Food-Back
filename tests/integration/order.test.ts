@@ -6,7 +6,7 @@ import { ProductType } from '@prisma/client';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { cleanDb } from '../helpers';
 import { createOrder, createOrderBody, createOrderBodyWithToppings, getOrder } from '../factories/order-factory';
-import { createProduct, createProductForOrder } from '../factories/product-factory';
+import { createProduct, createProductForOrder, getProductByOrder } from '../factories/product-factory';
 import app from '../../src/app';
 
 dayjs.extend(localizedFormat);
@@ -151,13 +151,31 @@ describe('POST /orders', () => {
 
     it('should return status 201, create the order and products of the order and return order data', async () => {
       const product = await createProduct(ProductType.Hamburger);
-      const body = createOrderBodyWithToppings({ products: [{ productId: product.id }] });
+      const body = createOrderBodyWithToppings({
+        products: [{ productId: product.id, toppings: faker.person.firstName() }],
+      });
+      console.log(body);
 
       const response = await server.post('/orders').send(body);
       const order = await getOrder();
+      const productByOrder = await getProductByOrder(order.id);
 
       expect(response.status).toBe(httpStatus.CREATED);
-      expect(response.body).toEqual(order);
+      expect(response.body).toEqual({
+        ...order,
+        createdAt: order.createdAt.toISOString(),
+        updatedAt: order.updatedAt.toISOString(),
+      });
+      expect(productByOrder).toEqual({
+        id: expect.any(Number),
+        observation: null,
+        productId: product.id,
+        orderId: order.id,
+        quantity: 1,
+        toppings: body.products[0].toppings,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
     });
   });
 });

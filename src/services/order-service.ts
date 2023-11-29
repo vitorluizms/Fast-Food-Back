@@ -5,17 +5,22 @@ import { CreateOrder, ProductsArray } from '@/protocols';
 import orderRepository from '@/repositories/order-repository';
 import productRepository from '@/repositories/product-repository';
 
-async function validateProductsId(products: ProductsArray): Promise<void> {
+function filterRepeatedElements(products: ProductsArray) {
   const uniqueIds = {};
-  const filteredArray = products.filter(element => {
+  return products.filter(element => {
     if (uniqueIds[element.productId] === undefined) {
       uniqueIds[element.productId] = true;
       return true;
     }
     return false;
   });
+}
+
+async function validateProductsId(products: ProductsArray): Promise<void> {
+  const filteredArray = filterRepeatedElements(products);
 
   const arrayOfIds: number[] = products.map(element => element.productId);
+
   const count: { count: number } = await productRepository.getCountOfProductsInArray(arrayOfIds);
   if (count.count !== filteredArray.length) {
     throw notFoundError('Ids de produto inválido!');

@@ -17,7 +17,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 - NPM: v9.5.1 (Utilizado no desenvolvimento);
 - Postgres: v16.1 (Utilizado no desenvolvimento);
 
-- ## 🔧 Tecnologias
+## 🔧 Tecnologias
 
 Para a construção do projeto foi utilizado as seguintes tecnologias:
 
@@ -33,7 +33,7 @@ Para a construção do projeto foi utilizado as seguintes tecnologias:
 - Dotenv/ Dotenv-cli (Carregar variáveis de ambiente): v16.3.1 e 7.3.0;
 - Nodemon (Reinicialização automática do servidor): v3.0.1.
 
-- ## 📏Padronização
+## 📏Padronização
 
 Neste projeto foi utilizado:
 
@@ -49,13 +49,13 @@ Para instalar o Fast Food API, siga estas etapas:
 2. Acesse o diretório do projeto: `cd Fast-Food-Devio-Back`;
 3. Instale as dependências: `npm install` ou `npm i`.
 
-### 🗄️ Banco de Dados
+## 🗄️ Banco de Dados
 
 1. Certifique-se de ter o PostgreSQL instalado na máquina;
 2. Para rodar o projeto em desenvolvimento, copie o arquivo `.env.example`, crie um novo com nome `.env.development` e configure a variável de ambiente relacionada ao banco de dados: `DATABASE_URL`, conforme exemplificado no `.env.example`;
 3. Caso utilize o comando `npm run start`, deverá criar o arquivo apenas `.env` ao invés de `.env.development`.
 
-### 🔶 Prisma
+## 🔶 Prisma
 
 Para criar o banco e as tabelas:
 

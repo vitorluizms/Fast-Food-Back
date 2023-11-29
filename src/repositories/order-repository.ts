@@ -60,5 +60,16 @@ async function getAllOrders() {
   return orders;
 }
 
-const orderRepository = { create, finishOrder, getOrderById, getAllOrders };
+async function deliverOrder(id: number): Promise<Order> {
+  const orderDelivered = await prisma.order.update({
+    where: { id },
+    data: {
+      delivered: true,
+    },
+  });
+
+  return orderDelivered;
+}
+
+const orderRepository = { create, finishOrder, getOrderById, getAllOrders, deliverOrder };
 export default orderRepository;

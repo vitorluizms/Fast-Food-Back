@@ -154,7 +154,6 @@ describe('POST /orders', () => {
       const body = createOrderBodyWithToppings({
         products: [{ productId: product.id, toppings: faker.person.firstName() }],
       });
-      console.log(body);
 
       const response = await server.post('/orders').send(body);
       const order = await getOrder();

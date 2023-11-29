@@ -17,11 +17,19 @@ async function finishOrder(req: Request, res: Response) {
 
   res.status(httpStatus.OK).send(orderFinished);
 }
+
 async function get(req: Request, res: Response) {
   const orders: Order[] = await orderService.get();
 
   res.status(httpStatus.OK).send(orders);
 }
 
-const orderController = { create, finishOrder, get };
+async function deliverOrder(req: Request, res: Response) {
+  const { id } = req.params;
+  const orderDelivered = await orderService.deliverOrder(Number(id));
+
+  res.status(httpStatus.OK).send(orderDelivered);
+}
+
+const orderController = { create, finishOrder, get, deliverOrder };
 export default orderController;

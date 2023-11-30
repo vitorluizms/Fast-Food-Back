@@ -10,6 +10,7 @@
     "migration:deploy": "npm run dev:load:env prisma migrate deploy",
     "dev:load:env": "dotenv -e .env.development",
     "dev": "npm run dev:load:env nodemon src/server.ts",
+    "dev:seed": "npm run dev:load:env prisma db seed",
     "start": "prisma migrate deploy && node dist/src/server.js",
     "test:load:env": "dotenv -e .env.test",
     "test": "dotenv -e .env.test -- jest --passWithNoTests --runInBand --detectOpenHandles",

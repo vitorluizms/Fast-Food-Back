@@ -30,7 +30,7 @@
     "ts": "node --require ts-node/register --require tsconfig-paths/register"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node dist/prisma/seed.js"
   },
   "keywords": [],
   "author": "",

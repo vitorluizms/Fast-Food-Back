@@ -148,9 +148,7 @@ async function main() {
   for (const element of products) {
     await createProduct(element);
   }
-  // products.forEach(async element => await createProduct(element));
 
-  console.log(burgersId);
   const toppings = burgersId
     .map(element => {
       return [

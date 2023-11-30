@@ -67,8 +67,14 @@ Para criar o banco e as tabelas:
 
 Para usar, siga estas etapas:
 
-1. Desenvolvimento: `npm run dev`
-2. Início simples: `npm run start`
+1. Desenvolvimento: `npm run dev`;
+2. Início simples: `npm run start`;
+
+Caso queira testar as rotas com dados reais, é possível executar um seed, nesse seed possui registros para Produtos e Adicionais.
+Comando para executar o seed:
+
+1. Certifique-se de ter executado npm run `migration:dev` para ter o banco configurado;
+2. Execute o comando `npm run dev:seed`;
 
 ## 🧑‍💻 Testes
 

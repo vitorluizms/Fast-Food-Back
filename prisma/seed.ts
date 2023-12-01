@@ -154,18 +154,21 @@ async function main() {
       return [
         {
           name: 'Bacon',
+          description: '10g',
           price: 200,
           image: 'https://i.imgur.com/ls272xU.png',
           productId: element,
         },
         {
           name: 'Ovo',
+          description: 'Ovo frito',
           price: 100,
           image: 'https://i.imgur.com/q7nGLN1.png',
           productId: element,
         },
         {
           name: 'Cheddar',
+          description: '10g',
           price: 100,
           image: 'https://i.imgur.com/70f6XqM.png',
           productId: element,

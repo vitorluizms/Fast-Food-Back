@@ -21,6 +21,7 @@ export async function createTopping(productId: number): Promise<Topping> {
       name: faker.commerce.product(),
       price: faker.number.int({ max: 2147000000 }),
       productId,
+      description: faker.person.firstName(),
       image: faker.image.urlPicsumPhotos(),
     },
   });

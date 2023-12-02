@@ -60,6 +60,16 @@ async function getAllOrders() {
   return orders;
 }
 
+async function getLastOrder() {
+  const order = await prisma.order.findFirst({
+    orderBy: {
+      id: 'desc',
+    },
+  });
+
+  return order;
+}
+
 async function deliverOrder(id: number): Promise<Order> {
   const orderDelivered = await prisma.order.update({
     where: { id },
@@ -71,5 +81,11 @@ async function deliverOrder(id: number): Promise<Order> {
   return orderDelivered;
 }
 
-const orderRepository = { create, finishOrder, getOrderById, getAllOrders, deliverOrder };
+async function deleteOrder(id: number): Promise<void> {
+  await prisma.order.delete({
+    where: { id },
+  });
+}
+
+const orderRepository = { create, finishOrder, getOrderById, getAllOrders, deliverOrder, deleteOrder, getLastOrder };
 export default orderRepository;

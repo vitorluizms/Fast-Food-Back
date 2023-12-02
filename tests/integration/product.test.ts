@@ -41,6 +41,7 @@ describe('GET /products', () => {
           name: topping1.name,
           productId: product1.id,
           price: topping1.price,
+          description: topping1.description,
           image: topping1.image,
           createdAt: topping1.createdAt.toISOString(),
           updatedAt: topping1.updatedAt.toISOString(),
@@ -50,6 +51,7 @@ describe('GET /products', () => {
           name: topping2.name,
           productId: product1.id,
           price: topping2.price,
+          description: topping2.description,
           image: topping2.image,
           createdAt: topping2.createdAt.toISOString(),
           updatedAt: topping2.updatedAt.toISOString(),
@@ -72,6 +74,7 @@ describe('GET /products', () => {
           productId: product2.id,
           price: topping3.price,
           image: topping3.image,
+          description: topping3.description,
           createdAt: topping3.createdAt.toISOString(),
           updatedAt: topping3.updatedAt.toISOString(),
         },
@@ -99,6 +102,7 @@ type ProductWithToppings = {
     name: string;
     productId: number;
     image: string;
+    description: string;
     price: number;
     createdAt: string;
     updatedAt: string;

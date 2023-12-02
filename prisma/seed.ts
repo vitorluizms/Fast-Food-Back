@@ -2,8 +2,10 @@ import { ProductType } from '@prisma/client';
 import prisma from '../src/database/database';
 
 async function clearDatabase() {
+  await prisma.productByOrder.deleteMany();
   await prisma.topping.deleteMany();
   await prisma.product.deleteMany();
+  await prisma.order.deleteMany();
 }
 
 async function main() {

@@ -62,6 +62,12 @@ async function get() {
   return orders;
 }
 
+async function getLastOrder() {
+  const order = await orderRepository.getLastOrder();
+
+  return order;
+}
+
 async function deliverOrder(id: number): Promise<Order> {
   await validateOrderToDeliver(id);
   const orderDelivered = await orderRepository.deliverOrder(id);
@@ -81,5 +87,5 @@ async function deleteOrder(id: number): Promise<void> {
   await orderRepository.deleteOrder(id);
 }
 
-const orderService = { create, finishOrder, get, deliverOrder, deleteOrder };
+const orderService = { create, finishOrder, get, deliverOrder, deleteOrder, getLastOrder };
 export default orderService;

@@ -19,9 +19,14 @@ async function finishOrder(req: Request, res: Response) {
 }
 
 async function get(req: Request, res: Response) {
-  const orders: Order[] = await orderService.get();
-
-  res.status(httpStatus.OK).send(orders);
+  const { last } = req.query;
+  if (last === 'true') {
+    const order = await orderService.getLastOrder();
+    res.status(httpStatus.OK).send(order);
+  } else {
+    const orders: Order[] = await orderService.get();
+    res.status(httpStatus.OK).send(orders);
+  }
 }
 
 async function deliverOrder(req: Request, res: Response) {

@@ -370,16 +370,16 @@ describe('GET /orders', () => {
 
   it('should return the last order registered if query string "last" was sent', async () => {
     await createProduct(ProductType.Hamburger);
-    const order = await createOrder();
-    await createOrder(undefined, true);
+    await createOrder();
+    const order2 = await createOrder(undefined, true);
 
     const response = await server.get(`/orders?last=true`);
 
     expect(response.status).toBe(httpStatus.OK);
     expect(response.body).toEqual({
-      ...order,
-      createdAt: order.createdAt.toISOString(),
-      updatedAt: order.updatedAt.toISOString(),
+      ...order2,
+      createdAt: order2.createdAt.toISOString(),
+      updatedAt: order2.updatedAt.toISOString(),
     });
   });
 });

@@ -46,6 +46,7 @@ async function validateOrderToDeliver(id: number): Promise<void> {
 
   if (!order) throw notFoundError('Pedido não encontrado!');
   if (order.isFinished === false) throw conflictError('O pedido não está pronto!');
+  if (order.delivered === true) throw conflictError('O pedido já foi entregue!');
 }
 
 async function finishOrder(id: number): Promise<Order> {
@@ -68,5 +69,17 @@ async function deliverOrder(id: number): Promise<Order> {
   return orderDelivered;
 }
 
-const orderService = { create, finishOrder, get, deliverOrder };
+async function validateOrderToDelete(id: number) {
+  const order = await orderRepository.getOrderById(id);
+
+  if (!order) throw notFoundError('Pedido não encontrado!');
+  if (order.delivered === true) throw conflictError('O pedido já foi entregue!');
+}
+
+async function deleteOrder(id: number): Promise<void> {
+  await validateOrderToDelete(id);
+  await orderRepository.deleteOrder(id);
+}
+
+const orderService = { create, finishOrder, get, deliverOrder, deleteOrder };
 export default orderService;

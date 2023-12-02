@@ -31,5 +31,12 @@ async function deliverOrder(req: Request, res: Response) {
   res.status(httpStatus.OK).send(orderDelivered);
 }
 
-const orderController = { create, finishOrder, get, deliverOrder };
+async function deleteOrder(req: Request, res: Response) {
+  const { id } = req.params;
+  await orderService.deleteOrder(Number(id));
+
+  res.sendStatus(httpStatus.OK);
+}
+
+const orderController = { create, finishOrder, get, deliverOrder, deleteOrder };
 export default orderController;

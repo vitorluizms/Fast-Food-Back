@@ -71,5 +71,11 @@ async function deliverOrder(id: number): Promise<Order> {
   return orderDelivered;
 }
 
-const orderRepository = { create, finishOrder, getOrderById, getAllOrders, deliverOrder };
+async function deleteOrder(id: number): Promise<void> {
+  await prisma.order.delete({
+    where: { id },
+  });
+}
+
+const orderRepository = { create, finishOrder, getOrderById, getAllOrders, deliverOrder, deleteOrder };
 export default orderRepository;

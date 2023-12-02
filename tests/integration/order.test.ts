@@ -367,6 +367,21 @@ describe('GET /orders', () => {
       },
     ]);
   });
+
+  it('should return the last order registered if query string "last" was sent', async () => {
+    await createProduct(ProductType.Hamburger);
+    const order = await createOrder();
+    await createOrder(undefined, true);
+
+    const response = await server.get(`/orders?last=true`);
+
+    expect(response.status).toBe(httpStatus.OK);
+    expect(response.body).toEqual({
+      ...order,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+    });
+  });
 });
 
 describe('PATCH /orders/:id/delivered', () => {
@@ -392,6 +407,7 @@ describe('PATCH /orders/:id/delivered', () => {
     const response = await server.patch(`/orders/${faker.number.int({ min: 1, max: 40 })}/delivered`);
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
+    expect(response.text).toEqual('Pedido não encontrado!');
   });
 
   it('should return status 409 if order is not finished', async () => {
@@ -399,13 +415,15 @@ describe('PATCH /orders/:id/delivered', () => {
     const response = await server.patch(`/orders/${order.id}/delivered`);
 
     expect(response.status).toBe(httpStatus.CONFLICT);
+    expect(response.text).toEqual('O pedido não está pronto!');
   });
 
   it('should return status 409 if order is already delivered', async () => {
-    const order = await createOrder(undefined, true);
+    const order = await createOrder(true, true);
     const response = await server.patch(`/orders/${order.id}/delivered`);
 
     expect(response.status).toBe(httpStatus.CONFLICT);
+    expect(response.text).toEqual('O pedido já foi entregue!');
   });
 
   it('should return status 200, update order to delivered and return order data updated', async () => {
@@ -426,5 +444,52 @@ describe('PATCH /orders/:id/delivered', () => {
       createdAt: order.createdAt.toISOString(),
       updatedAt: expect.any(String),
     });
+  });
+});
+
+describe('DELETE /orders/:id', () => {
+  it('should return status 400 if orderId sent is not a number', async () => {
+    const response = await server.patch(`/orders/${faker.person.firstName()}/delivered`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número');
+  });
+
+  it('should return status 400 if orderId sent is not an integer', async () => {
+    const response = await server.patch(`/orders/${faker.number.float()}/delivered`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número inteiro');
+  });
+
+  it('should return status 400 if orderId sent is not greater than 0', async () => {
+    const response = await server.patch(`/orders/${faker.number.int({ min: -10, max: 0 })}/delivered`);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    expect(response.text).toEqual('O campo "id" deve ser um número inteiro maior que 0');
+  });
+
+  it('should return status 404 if orderId does not exists', async () => {
+    const response = await server.delete('/orders/1');
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
+    expect(response.text).toEqual('Pedido não encontrado!');
+  });
+
+  it('should return status 409 if order was delivered', async () => {
+    const order = await createOrder(true, true);
+
+    const response = await server.delete(`/orders/${order.id}`);
+
+    expect(response.status).toBe(httpStatus.CONFLICT);
+    expect(response.text).toEqual('O pedido já foi entregue!');
+  });
+
+  it('should return status 200 and delete the order', async () => {
+    const order = await createOrder(true);
+
+    const response = await server.delete(`/orders/${order.id}`);
+
+    expect(response.status).toBe(httpStatus.OK);
   });
 });

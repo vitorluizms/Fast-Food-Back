@@ -9,7 +9,7 @@ export const orderSchema = Joi.object<CreateOrder>({
       Joi.object({
         productId: Joi.number().integer().greater(0).required(),
         toppings: Joi.string().optional(),
-        observation: Joi.string().optional(),
+        observation: Joi.string().min(0).optional(),
         quantity: Joi.number().integer().greater(0).optional(),
       }),
     )

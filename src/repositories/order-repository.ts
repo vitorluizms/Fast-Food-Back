@@ -18,6 +18,7 @@ async function create(body: CreateOrder): Promise<Order> {
         toppings: element.toppings,
         orderId: order.id,
         quantity: element.quantity,
+        observation: element.observation,
       })),
     });
   });

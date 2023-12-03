@@ -84,6 +84,7 @@ async function validateOrderToDelete(id: number) {
 
 async function deleteOrder(id: number): Promise<void> {
   await validateOrderToDelete(id);
+
   await orderRepository.deleteOrder(id);
 }
 

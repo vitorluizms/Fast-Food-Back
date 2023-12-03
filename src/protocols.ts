@@ -6,7 +6,7 @@ export type CreateOrder = {
       productId: number;
       toppings?: string;
       quantity?: number;
-      description?: string;
+      observation?: string;
     },
   ];
 };

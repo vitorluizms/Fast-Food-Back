@@ -9,9 +9,22 @@ O deploy, do banco e da API, ambos foram hospedados, no Render.
 
 URL da API: `https://devio-fast-food-api.onrender.com`
 
+## !Importante
+
+O deploy da API foi realizado no Render com o plano free trial, com isso, uma das limitações é que o Render desliga o servidor com um certo tempo de inatividade.
+
+Caso for testar o deploy, ou o Front-End, e as respostas demorarem para chegar, muito provavelmente, o servidor estava desligado, e o Render está iniciando.
+
+Esse processo de iniciar o servidor, geralmente demora em torno de 5 minutos.
+
 ## 📚 Documentação
 
+Para acessar a documentação feita pelo swagger, existem 2 opções:
 
+1. Utilizando o link de deploy com: `https://devio-fast-food-api.onrender.com/api-docs`;
+2. Utilizando o localhost, para isso, faça todo o procedimento de instalação, e inicie o localhost com `npm run dev`, e digite no navegador `localhost:3000/api-docs`;
+
+Como a documentação é uma rota da própria API, caso vá utilizá-la com o link do deploy, lembre-se que ela também está sujeita ao processo de desligamento por inatividade do Render.
 
 ## 💻 Pré-requisitos
 
@@ -58,7 +71,7 @@ Para instalar o Fast Food API, siga estas etapas:
 1. As informações sobre as tabelas criadas e relações estão no arquivo `schema.prisma`;
 2. Certifique-se de ter o PostgreSQL instalado na máquina;
 3. Para rodar o projeto em desenvolvimento, copie o arquivo `.env.example`, crie um novo com nome `.env.development` e configure a variável de ambiente relacionada ao banco de dados: `DATABASE_URL`, conforme exemplificado no `.env.example`;
-3. Caso utilize o comando `npm run start`, deverá criar o arquivo apenas `.env` ao invés de `.env.development`.
+4. Caso utilize o comando `npm run start`, deverá criar o arquivo apenas `.env` ao invés de `.env.development`.
 
 ## 🔶 Prisma
 

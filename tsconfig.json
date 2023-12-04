@@ -5,6 +5,7 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "baseUrl": "src",
+    "resolveJsonModule": true,
     "rootDirs": ["src", "prisma"],
     "paths": {
       "@/*": ["*"]

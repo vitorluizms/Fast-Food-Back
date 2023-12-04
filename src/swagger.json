@@ -1,0 +1,406 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fast Food API",
+    "description": "API desenvolvida para atender a uma aplicação front-end de um restaurante de fast food",
+    "contact": {
+      "email": "vitor.luiz.eer@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://devio-fast-food-api.onrender.com",
+      "description": "API de Produção"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "API de Teste"
+    }
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "summary": "Busca de produtos",
+        "description": "Essa rota é responsável por buscar todos os produtos",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "image": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "integer"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "Topping": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "price": {
+                              "type": "integer"
+                            },
+                            "productId": {
+                              "type": "integer"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "image": {
+                              "type": "string"
+                            },
+                            "createdAt": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "summary": "Criação de pedido",
+        "description": "Essa rota é responsável por criar um pedido",
+        "tags": ["Orders"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid Body Error"
+          },
+          "404": {
+            "description": "ID(s) de produto(s) inválido(s)"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "client": {
+                      "type": "string"
+                    },
+                    "amountPay": {
+                      "type": "integer"
+                    },
+                    "isFinished": {
+                      "type": "boolean"
+                    },
+                    "delivered": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Busca de pedidos",
+        "description": "Essa rota é responsável por buscar o último ou todos os pedidos",
+        "tags": ["Orders"],
+        "parameters": [
+          {
+            "name": "last",
+            "in": "query",
+            "description": "'true' para buscar o último pedido armazenado no banco",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "semQueryString": {
+                    "value": [
+                      {
+                        "id": "integer",
+                        "client": "string",
+                        "amountPay": "integer",
+                        "isFinished": "boolean",
+                        "delivered": "boolean",
+                        "createdAt": "string",
+                        "updatedAt": "string",
+                        "products": [
+                          {
+                            "observation": "string",
+                            "quantity": "integer",
+                            "toppings": "string",
+                            "product": {
+                              "name": "string",
+                              "image": "string"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "comQueryString": {
+                    "value": {
+                      "id": "integer",
+                      "client": "string",
+                      "amountPay": "integer",
+                      "isFinished": "boolean",
+                      "delivered": "boolean",
+                      "createdAt": "string",
+                      "updatedAt": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}/finish": {
+      "patch": {
+        "summary": "Alteração de pedido",
+        "description": "Essa rota é responsável por declarar um pedido como pronto",
+        "tags": ["Orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Atualizar um pedido pelo ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid Body Error"
+          },
+          "404": {
+            "description": "Pedido não encontrado!"
+          },
+          "409": {
+            "description": "Pedido já está encerrado!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "client": {
+                      "type": "string"
+                    },
+                    "amountPay": {
+                      "type": "integer"
+                    },
+                    "isFinished": {
+                      "type": "boolean"
+                    },
+                    "delivered": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}/delivered": {
+      "patch": {
+        "summary": "Alteração de pedido",
+        "description": "Essa rota é responsável por declarar um pedido como entregue",
+        "tags": ["Orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Atualizar um pedido pelo ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid Body Error"
+          },
+          "404": {
+            "description": "Pedido não encontrado!"
+          },
+          "409": {
+            "description": "Pedido não está encerrado!"
+          },
+          "409": {
+            "description": "O pedido já foi entregue!"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "client": {
+                      "type": "string"
+                    },
+                    "amountPay": {
+                      "type": "integer"
+                    },
+                    "isFinished": {
+                      "type": "boolean"
+                    },
+                    "delivered": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "delete": {
+        "summary": "Deleção de produção",
+        "description": "Essa rota é responsável por deletar um pedido do banco",
+        "tags": ["Orders"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Deletar um pedido pelo ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid Body Error"
+          },
+          "404": {
+            "description": "Pedido não encontrado!"
+          },
+          "409": {
+            "description": "Pedido já foi entregue!"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Order": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string"
+          },
+          "amountPay": {
+            "type": "integer"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "integer"
+                },
+                "toppings": {
+                  "type": "string"
+                },
+                "observation": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": ["productId"]
+            }
+          }
+        },
+        "required": ["client", "amountPay", "products"]
+      }
+    }
+  }
+}
